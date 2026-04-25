@@ -25,9 +25,14 @@ export default function HomePage() {
     setTimeout(() => setHeroRevealed(true), 100);
   };
 
-  // Skip loader on subsequent visits in same session
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
+
   useEffect(() => {
-    if (sessionStorage.getItem('nn_loaded')) {
+    setIsLoaded(true);
+    if (!sessionStorage.getItem('nn_loaded')) {
+      setShowLoader(true);
+    } else {
       setLoaderDone(true);
       setHeroRevealed(true);
     }
@@ -37,9 +42,11 @@ export default function HomePage() {
     if (loaderDone) sessionStorage.setItem('nn_loaded', '1');
   }, [loaderDone]);
 
+  if (!isLoaded) return null; // Avoid hydration mismatch
+
   return (
     <main>
-      {!sessionStorage.getItem('nn_loaded') && !loaderDone && (
+      {showLoader && !loaderDone && (
         <LoadingScreen onComplete={handleLoaderComplete} />
       )}
 
