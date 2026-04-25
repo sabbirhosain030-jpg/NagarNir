@@ -2,32 +2,304 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── CSS Custom Properties (fallback defaults — overridden by Supabase theme) ─ */
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --concrete-white:  #F2F0EB;
+  --steel-blue:      #1A2B3C;
+  --iron-dark:       #0D0F12;
+  --amber-glow:      #D4820A;
+  --rebar-red:       #C0392B;
+  --blueprint-line:  #2A6496;
+  --dust-gray:       #8A8D91;
+  --glass-tint:      rgba(26,43,60,0.15);
+
+  --font-bebas:    var(--font-bebas, 'Bebas Neue', sans-serif);
+  --font-barlow:   var(--font-barlow, 'Barlow Condensed', sans-serif);
+  --font-lora:     var(--font-lora, 'Lora', serif);
+  --font-mono:     var(--font-mono, 'JetBrains Mono', monospace);
+  --font-hind:     var(--font-hind, 'Hind Siliguri', sans-serif);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+/* ─── Global Reset ─────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles this */
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: var(--iron-dark);
+  color: var(--concrete-white);
+  font-family: var(--font-lora), 'Lora', serif;
+  overflow-x: hidden;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Custom cursor — hidden on touch */
+@media (pointer: fine) {
+  body, body * {
+    cursor: none !important;
   }
+}
+
+@media (pointer: coarse) {
+  body, body * {
+    cursor: auto !important;
+  }
+}
+
+/* ─── Custom Scrollbar ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--iron-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--amber-glow);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--concrete-white);
+}
+
+/* ─── Typography Utilities ──────────────────────────────────────────────────── */
+.font-display   { font-family: var(--font-bebas), 'Bebas Neue', sans-serif; }
+.font-heading   { font-family: var(--font-barlow), 'Barlow Condensed', sans-serif; }
+.font-body      { font-family: var(--font-lora), 'Lora', serif; }
+.font-mono      { font-family: var(--font-mono), 'JetBrains Mono', monospace; }
+.font-bengali   { font-family: var(--font-hind), 'Hind Siliguri', sans-serif; }
+
+/* ─── Color Utilities ───────────────────────────────────────────────────────── */
+.text-concrete  { color: var(--concrete-white); }
+.text-amber     { color: var(--amber-glow); }
+.text-steel     { color: var(--steel-blue); }
+.text-dust      { color: var(--dust-gray); }
+.text-rebar     { color: var(--rebar-red); }
+.text-blueprint { color: var(--blueprint-line); }
+
+.bg-iron        { background-color: var(--iron-dark); }
+.bg-steel       { background-color: var(--steel-blue); }
+.bg-amber       { background-color: var(--amber-glow); }
+.bg-concrete    { background-color: var(--concrete-white); }
+
+/* ─── Corner Cut Clip Path ──────────────────────────────────────────────────── */
+.corner-cut {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+.corner-cut-sm {
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+.corner-cut-lg {
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+}
+.corner-cut-bl {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+.corner-cut-tr {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+.corner-cut-both {
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+
+/* ─── Glassmorphism ─────────────────────────────────────────────────────────── */
+.glass {
+  background: var(--glass-tint);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(242, 240, 235, 0.08);
+}
+
+.glass-dark {
+  background: rgba(13, 15, 18, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(242, 240, 235, 0.06);
+}
+
+/* ─── Blueprint Grid ────────────────────────────────────────────────────────── */
+.blueprint-grid {
+  background-image:
+    linear-gradient(rgba(42, 100, 150, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 100, 150, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.blueprint-grid-sm {
+  background-image:
+    linear-gradient(rgba(42, 100, 150, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 100, 150, 0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(242,240,235,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ─── Section Common ────────────────────────────────────────────────────────── */
+.section-padding {
+  padding: 7rem 2rem;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding: 8rem 4rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .section-padding {
+    padding: 9rem 6rem;
+  }
+}
+
+.max-content {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─── Amber Edge ────────────────────────────────────────────────────────────── */
+.amber-top-edge {
+  position: relative;
+}
+.amber-top-edge::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--amber-glow), rgba(212,130,10,0.3), transparent);
+}
+
+/* ─── Infinite Marquee ──────────────────────────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 28s linear infinite;
+  display: flex;
+  width: max-content;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ─── Liquid Fill ───────────────────────────────────────────────────────────── */
+@keyframes liquidFill {
+  0%   { height: 0%; opacity: 0.2; }
+  100% { height: 100%; opacity: 1; }
+}
+
+.liquid-fill {
+  animation: liquidFill 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ─── Pulse ─────────────────────────────────────────────────────────────────── */
+@keyframes scrollPulse {
+  0%   { top: -40%; opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.scroll-pulse {
+  animation: scrollPulse 1.8s ease infinite;
+}
+
+/* ─── Blueprint Draw ────────────────────────────────────────────────────────── */
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ─── Loading Bar ───────────────────────────────────────────────────────────── */
+@keyframes loadBar {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+/* ─── Skeleton ──────────────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ─── Fade In Up ────────────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Admin panel base ──────────────────────────────────────────────────────── */
+.admin-input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 0.625rem 0.875rem;
+  color: var(--concrete-white);
+  font-family: var(--font-lora), serif;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.admin-input:focus {
+  border-color: var(--amber-glow);
+  box-shadow: 0 0 0 2px rgba(212,130,10,0.15);
+}
+
+.admin-input::placeholder {
+  color: var(--dust-gray);
+}
+
+select.admin-input option {
+  background: #111317;
+  color: var(--concrete-white);
+}
+
+/* ─── Toggle Switch ─────────────────────────────────────────────────────────── */
+.toggle-root {
+  position: relative;
+  display: inline-flex;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggle-root[data-checked="true"]  { background: var(--amber-glow); }
+.toggle-root[data-checked="false"] { background: rgba(255,255,255,0.15); }
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  transition: left 0.2s;
+}
+
+.toggle-root[data-checked="true"]  .toggle-thumb { left: 23px; }
+.toggle-root[data-checked="false"] .toggle-thumb { left: 3px; }
+
+/* ─── Selection color ───────────────────────────────────────────────────────── */
+::selection {
+  background: rgba(212, 130, 10, 0.3);
+  color: var(--concrete-white);
 }
